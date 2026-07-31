@@ -33,6 +33,10 @@ from matplotlib.image import imread
 import cv2
 
 class UserWebcamPlayer:
+    #added this because it was taking way too long to load the model every time _get_emotion was called
+    def __init__(self):
+        self.model = models.load_model('results/basic_model_15_epochs_timestamp_1785376546.keras', compile=False)
+    
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         width, height = frame.shape
@@ -107,8 +111,13 @@ class UserWebcamPlayer:
         # The classification value should be 0, 1, or 2 for neutral, happy or surprise respectively
 
         # return an integer (0, 1 or 2), otherwise the code will throw an error
-        return 1
-        pass
+        img = cv2.resize(img, image_size)
+        img = np.stack((img, img, img), axis=-1)
+        img = np.expand_dims(img, axis=0)
+        prediction = self.model.predict(img, verbose=0)
+        pred = int(np.argmax(prediction[0]))
+        mapping = {0: 1, 1: 0, 2: 2}
+        return mapping[pred]
     
     def get_move(self, board_state):
         row, col = None, None
