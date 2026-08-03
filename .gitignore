@@ -9,10 +9,12 @@ train/
 test/
 transfer_data/
 
-*.keras
 *.h5
-*.npy
 
+# Keep Divya's trained FER2013 artifacts for the game controller / reports
 results/*
 !results/.gitkeep
-
+!results/best_basic_model.keras
+!results/best_basic_model.npy
+!results/basic_model_history.png
+!results/basic_model_metrics.json

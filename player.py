@@ -33,9 +33,9 @@ from matplotlib.image import imread
 import cv2
 
 class UserWebcamPlayer:
-    #added this because it was taking way too long to load the model every time _get_emotion was called
+    # Cache the trained FER2013 model so it is not reloaded every prediction.
     def __init__(self):
-        self.model = models.load_model('results/basic_model_15_epochs_timestamp_1785376546.keras', compile=False)
+        self.model = models.load_model('results/best_basic_model.keras', compile=False)
     
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
