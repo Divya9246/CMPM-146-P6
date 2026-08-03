@@ -9,10 +9,16 @@ train/
 test/
 transfer_data/
 
-*.keras
 *.h5
-*.npy
 
+# Keep canonical trained artifacts for submission / transfer learning
 results/*
 !results/.gitkeep
+!results/best_basic_model.keras
+!results/best_basic_model.npy
+!results/basic_model_history.png
+!results/basic_model_metrics.json
+!results/train_log.txt
 
+# Local export folder (zip may be committed for Canvas/Colab handoff)
+P6_export/

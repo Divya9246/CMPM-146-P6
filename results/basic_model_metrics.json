@@ -1,0 +1,13 @@
+{
+  "model_file": "results/best_basic_model.keras",
+  "timestamped_model_file": "results/basic_model_25_epochs_timestamp_1785791866.keras",
+  "epochs_trained": 25,
+  "best_val_accuracy": 0.7689999938011169,
+  "final_train_accuracy": 0.7484999895095825,
+  "final_val_accuracy": 0.7570000290870667,
+  "test_metrics": {
+    "accuracy": 0.7561230063438416,
+    "loss": 0.6071336269378662
+  },
+  "total_params": 149683
+}
