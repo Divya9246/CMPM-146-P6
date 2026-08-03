@@ -1,4 +1,4 @@
-from config import BOARD_SIZE, categories, image_size
+from config import BOARD_SIZE, categories, image_size, basic_model_path
 from tensorflow.keras import models
 import numpy as np
 import tensorflow as tf
@@ -33,9 +33,9 @@ from matplotlib.image import imread
 import cv2
 
 class UserWebcamPlayer:
-    #added this because it was taking way too long to load the model every time _get_emotion was called
+    # Cache the model so it is not reloaded for every emotion prediction.
     def __init__(self):
-        self.model = models.load_model('results/basic_model_15_epochs_timestamp_1785376546.keras', compile=False)
+        self.model = models.load_model(basic_model_path, compile=False)
     
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -116,6 +116,9 @@ class UserWebcamPlayer:
         img = np.expand_dims(img, axis=0)
         prediction = self.model.predict(img, verbose=0)
         pred = int(np.argmax(prediction[0]))
+        # image_dataset_from_directory sorts labels alphabetically:
+        # happy=0, neutral=1, surprise=2. Map to assignment order:
+        # neutral=0, happy=1, surprise=2.
         mapping = {0: 1, 1: 0, 2: 2}
         return mapping[pred]
     

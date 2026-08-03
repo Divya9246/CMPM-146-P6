@@ -1,7 +1,7 @@
 from models.model import Model
 from tensorflow.keras import Sequential, layers, models
-from tensorflow.keras.layers.experimental.preprocessing import Rescaling
 from tensorflow.keras.optimizers import RMSprop, Adam
+from config import basic_model_path
 
 class RandomModel(Model):
     def _define_model(self, input_shape, categories_count):
@@ -15,17 +15,17 @@ class RandomModel(Model):
         # use this model by removing the last layer, adding dense layers and an output layer
 
         
-        basemodel = models.load_model("results/basic_model_12_epochs_timestamp_1785540830.keras")
+        basemodel = models.load_model(basic_model_path)
         self._randomize_layers(basemodel)
         for layer in basemodel.layers[:-1]:
             layer.trainable = True
 
         x = basemodel.get_layer("flatten").output
-        x = layers.Dense(32,activation="relu", name="trans_dense")(x)
-        x = layers.Dropout(0.3,name="trans_dropout")(x)
-        output = layers.Dense(categories_count,activation="softmax",name = "random_output")(x)
+        x = layers.Dense(18, activation="relu", name="trans_dense")(x)
+        x = layers.Dropout(0.3, name="trans_dropout")(x)
+        output = layers.Dense(categories_count, activation="softmax", name="random_output")(x)
         
-        self.model = models.Model(inputs=basemodel.input,outputs=output)
+        self.model = models.Model(inputs=basemodel.input, outputs=output)
 
     
     def _compile_model(self):

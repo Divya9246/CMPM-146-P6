@@ -33,8 +33,8 @@ def plot_history_diff(initial_hist, transfered_hist):
     plt.show()
 
 if __name__ == "__main__":
-    # Your code should change the number of epochs
-    epochs = 12
+    # Teammate-tuned epoch count for dog-vs-cat far transfer
+    epochs = 9
     print('* Data preprocessing')
     train_dataset, validation_dataset, test_dataset = get_transfer_datasets()
     histories = []
