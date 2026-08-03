@@ -20,6 +20,5 @@ results/*
 !results/basic_model_metrics.json
 !results/train_log.txt
 
-# Local export zip / folder (regenerate with make_export.sh)
+# Local export folder (zip may be committed for Canvas/Colab handoff)
 P6_export/
-P6_export.zip
