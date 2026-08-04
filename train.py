@@ -1,4 +1,28 @@
+import os
+import random
+import time
+import json
+
+# ---- Reproducibility (seed everyone to the same starting point) ----
+SEED = 42
+os.environ["PYTHONHASHSEED"] = str(SEED)
+os.environ["TF_DETERMINISTIC_OPS"] = "1"
+random.seed(SEED)
+
 import numpy as np
+np.random.seed(SEED)
+
+import tensorflow as tf
+tf.random.set_seed(SEED)
+try:
+    tf.keras.utils.set_random_seed(SEED)
+except Exception:
+    pass
+try:
+    tf.config.experimental.enable_op_determinism()
+except Exception:
+    pass
+
 from preprocess import get_datasets
 from models.basic_model import BasicModel
 from models.model import Model
@@ -6,9 +30,6 @@ from config import image_size
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import time
-import os
-import json
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 input_shape = (image_size[0], image_size[1], 3)
@@ -18,6 +39,11 @@ BEST_MODEL_PATH = "results/best_basic_model.keras"
 models = {
     'basic_model': BasicModel,
 }
+
+def _make_deterministic(dataset):
+    options = tf.data.Options()
+    options.experimental_deterministic = True
+    return dataset.with_options(options)
 
 def plot_history(history, save_path=None):
     hist = history.history if hasattr(history, "history") else history
@@ -56,8 +82,13 @@ if __name__ == "__main__":
     # Hyperparameter-tuned training for sections 5-6 (Divya / FER2013).
     epochs = 30
     os.makedirs("results", exist_ok=True)
+    print('* Using random seed {}'.format(SEED))
     print('* Data preprocessing')
     train_dataset, validation_dataset, test_dataset = get_datasets()
+    train_dataset = _make_deterministic(train_dataset)
+    validation_dataset = _make_deterministic(validation_dataset)
+    test_dataset = _make_deterministic(test_dataset)
+
     name = 'basic_model'
     model_class = models[name]
     print('* Training {} for up to {} epochs'.format(name, epochs))
@@ -114,6 +145,7 @@ if __name__ == "__main__":
     metrics = {
         "model_file": BEST_MODEL_PATH,
         "timestamped_model_file": filename,
+        "seed": SEED,
         "epochs_trained": len(history.history["accuracy"]),
         "best_val_accuracy": float(max(history.history["val_accuracy"])),
         "final_train_accuracy": float(history.history["accuracy"][-1]),
@@ -127,3 +159,5 @@ if __name__ == "__main__":
     print('* Model saved as {}'.format(filename))
     print('* Canonical model saved as {}'.format(BEST_MODEL_PATH))
     print('* Test accuracy: {:.4f}'.format(metrics["test_metrics"].get("accuracy", 0.0)))
+    print('* For identical accuracy on every device, share results/best_basic_model.keras')
+    print('*   and run: python3 evaluate_locked_model.py  (do not retrain)')
