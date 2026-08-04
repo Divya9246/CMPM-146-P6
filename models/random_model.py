@@ -21,7 +21,7 @@ class RandomModel(Model):
             layer.trainable = True
 
         x = basemodel.get_layer("flatten").output
-        x = layers.Dense(32,activation="relu", name="trans_dense")(x)
+        x = layers.Dense(18,activation="relu", name="trans_dense")(x)
         x = layers.Dropout(0.3,name="trans_dropout")(x)
         output = layers.Dense(categories_count,activation="softmax",name = "random_output")(x)
         
