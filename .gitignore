@@ -11,16 +11,21 @@ transfer_data/
 
 *.h5
 
-# Keep Divya's trained facial recognition artifacts for the game controller / reports
+# Keep only official Section 5 / Section 6 submission artifacts
 results/*
 !results/.gitkeep
-!results/best_basic_model.keras
-!results/best_basic_model.npy
-!results/best_basic_model_summary.txt
-!results/basic_model_history.png
-!results/basic_model_metrics.json
-!results/initial_basic_model.keras
-!results/initial_basic_model.npy
-!results/initial_basic_model_history.png
-!results/initial_basic_model_metrics.json
-!results/initial_basic_model_summary.txt
+!results/section5_initial_model.keras
+!results/section5_initial_model.npy
+!results/section5_initial_model_history.png
+!results/section5_initial_model_metrics.json
+!results/section5_initial_model_summary.txt
+!results/section6_final_model.keras
+!results/section6_final_model.npy
+!results/section6_final_model_history.png
+!results/section6_final_model_metrics.json
+!results/section6_final_model_summary.txt
+!results/attempts/
+!results/attempts/README.txt
+# Keep attempt .keras/.npy local only (large; not for submission)
+results/attempts/*
+!results/attempts/README.txt

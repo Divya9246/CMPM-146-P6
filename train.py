@@ -29,7 +29,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 input_shape = (image_size[0], image_size[1], 3)
 categories_count = 3
-BEST_MODEL_PATH = "results/best_basic_model.keras"
+BEST_MODEL_PATH = "results/section6_final_model.keras"
 
 models = {
     'basic_model': BasicModel,
@@ -75,7 +75,7 @@ def plot_history(history, save_path=None):
 
 if __name__ == "__main__":
     # Section 6 optimized facial recognition training.
-    # WARNING: Retraining overwrites results/best_basic_model.keras and can change
+    # WARNING: Retraining overwrites results/section6_final_model.keras and can change
     # the submission accuracy. For the frozen submission score, run:
     #   python3 evaluate_model.py
     # instead of this script.
@@ -137,12 +137,12 @@ if __name__ == "__main__":
     # Keep a stable filename for the webcam game controller.
     model.save_model(BEST_MODEL_PATH)
     np.save('results/{}.npy'.format(model_name), history.history)
-    np.save('results/best_basic_model.npy', history.history)
-    plot_history(history, save_path="results/basic_model_history.png")
+    np.save('results/section6_final_model.npy', history.history)
+    plot_history(history, save_path="results/section6_final_model_history.png")
 
     metrics = {
+        "label": "section6_final_optimized_network",
         "model_file": BEST_MODEL_PATH,
-        "timestamped_model_file": filename,
         "seed": SEED,
         "epochs_trained": len(history.history["accuracy"]),
         "best_val_accuracy": float(max(history.history["val_accuracy"])),
@@ -151,11 +151,11 @@ if __name__ == "__main__":
         "test_metrics": {k: float(v) for k, v in test_metrics.items()},
         "total_params": int(model.model.count_params()),
     }
-    with open("results/basic_model_metrics.json", "w") as f:
+    with open("results/section6_final_model_metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
     print('* Model saved as {}'.format(filename))
-    print('* Best model saved as {}'.format(BEST_MODEL_PATH))
+    print('* Final section 6 model saved as {}'.format(BEST_MODEL_PATH))
     print('* Test accuracy: {:.4f}'.format(metrics["test_metrics"].get("accuracy", 0.0)))
-    print('* For the same accuracy on every device, share results/best_basic_model.keras')
+    print('* For the same accuracy on every device, share results/section6_final_model.keras')
     print('*   and run: python3 evaluate_model.py  (do not retrain)')

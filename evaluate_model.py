@@ -5,7 +5,7 @@ Use this on every device so accuracy matches the shared saved weights.
 from models.model import Model
 from preprocess import get_datasets
 
-BEST_MODEL_PATH = "results/best_basic_model.keras"
+BEST_MODEL_PATH = "results/section6_final_model.keras"
 
 if __name__ == "__main__":
     print("* Loading facial recognition model from {}".format(BEST_MODEL_PATH))

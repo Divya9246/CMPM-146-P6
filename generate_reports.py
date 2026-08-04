@@ -95,12 +95,12 @@ def build_sections_5_6(initial, optimized):
 
     story.append(Paragraph("Initial Network Summary", styles["Heading2"]))
     story.append(Preformatted(
-        _summary_text(RESULTS / "initial_basic_model_summary.txt"),
+        _summary_text(RESULTS / "section5_initial_model_summary.txt"),
         styles["CodeBlock"],
     ))
 
     story.append(Paragraph("Initial Network Training Curves", styles["Heading2"]))
-    init_plot = RESULTS / "initial_basic_model_history.png"
+    init_plot = RESULTS / "section5_initial_model_history.png"
     if init_plot.exists():
         story.append(Image(str(init_plot), width=7.2 * inch, height=1.9 * inch))
 
@@ -140,12 +140,12 @@ def build_sections_5_6(initial, optimized):
 
     story.append(Paragraph("Optimized Network Summary", styles["Heading2"]))
     story.append(Preformatted(
-        _summary_text(RESULTS / "best_basic_model_summary.txt"),
+        _summary_text(RESULTS / "section6_final_model_summary.txt"),
         styles["CodeBlock"],
     ))
 
     story.append(Paragraph("Optimized Network Training Curves", styles["Heading2"]))
-    opt_plot = RESULTS / "basic_model_history.png"
+    opt_plot = RESULTS / "section6_final_model_history.png"
     if opt_plot.exists():
         story.append(Image(str(opt_plot), width=7.2 * inch, height=1.9 * inch))
 
@@ -287,10 +287,10 @@ def build_section_7(optimized):
 
 if __name__ == "__main__":
     REPORTS.mkdir(exist_ok=True)
-    initial = _load_json(RESULTS / "initial_basic_model_metrics.json")
-    optimized = _load_json(RESULTS / "basic_model_metrics.json")
-    # Normalize final-model identity in optimized metrics for the report.
-    optimized["model_file"] = "results/best_basic_model.keras"
+    initial = _load_json(RESULTS / "section5_initial_model_metrics.json")
+    optimized = _load_json(RESULTS / "section6_final_model_metrics.json")
+    # Keep final-model identity explicit for the report.
+    optimized["model_file"] = "results/section6_final_model.keras"
     build_sections_5_6(initial, optimized)
     build_section_7(optimized)
     print("Final optimized test accuracy used everywhere: {:.4f}".format(

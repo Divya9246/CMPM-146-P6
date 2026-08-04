@@ -33,8 +33,8 @@ except ImportError:
 from preprocess import get_datasets
 from config import image_size
 
-INITIAL_MODEL_PATH = "results/initial_basic_model.keras"
-SUMMARY_PATH = "results/initial_basic_model_summary.txt"
+INITIAL_MODEL_PATH = "results/section5_initial_model.keras"
+SUMMARY_PATH = "results/section5_initial_model_summary.txt"
 
 
 def plot_history(history, save_path):
@@ -102,19 +102,19 @@ if __name__ == "__main__":
     test_metrics = model.evaluate(test_ds, return_dict=True)
     print(test_metrics)
     model.save(INITIAL_MODEL_PATH)
-    np.save("results/initial_basic_model.npy", history.history)
-    plot_history(history, "results/initial_basic_model_history.png")
+    np.save("results/section5_initial_model.npy", history.history)
+    plot_history(history, "results/section5_initial_model_history.png")
 
     metrics = {
-        "label": "initial_network_section_5",
+        "label": "section5_initial_network",
         "model_file": INITIAL_MODEL_PATH,
         "epochs_trained": len(history.history["accuracy"]),
         "best_val_accuracy": float(max(history.history["val_accuracy"])),
         "test_metrics": {k: float(v) for k, v in test_metrics.items()},
         "total_params": int(model.count_params()),
-        "notes": "Simpler CNN: no augmentation, Dense(16), RMSprop(0.001). Target >= 60% test accuracy.",
+        "notes": "OFFICIAL Section 5 initial model. Simpler CNN: no augmentation, Dense(16), RMSprop(0.001). Target >= 60% test accuracy.",
     }
-    with open("results/initial_basic_model_metrics.json", "w") as f:
+    with open("results/section5_initial_model_metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
     print("* Initial test accuracy: {:.4f}".format(metrics["test_metrics"]["accuracy"]))
     print("* Saved", INITIAL_MODEL_PATH)

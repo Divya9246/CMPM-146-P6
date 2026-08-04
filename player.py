@@ -35,7 +35,7 @@ import cv2
 class UserWebcamPlayer:
     # Cache the trained facial recognition model so it is not reloaded every prediction.
     def __init__(self):
-        self.model = models.load_model('results/best_basic_model.keras', compile=False)
+        self.model = models.load_model('results/section6_final_model.keras', compile=False)
     
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
