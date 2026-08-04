@@ -10,7 +10,7 @@ except ImportError:
 
 class BasicModel(Model):
     def _define_model(self, input_shape, categories_count):
-        # FER2013 emotion CNN (neutral / happy / surprise), kept under 150k params.
+        # Facial recognition CNN (neutral / happy / surprise), kept under 150k params.
         self.model = Sequential([
             Rescaling(1. / 255, input_shape=input_shape),
             RandomFlip("horizontal"),

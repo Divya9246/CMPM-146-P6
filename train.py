@@ -79,7 +79,7 @@ def plot_history(history, save_path=None):
     plt.close()
 
 if __name__ == "__main__":
-    # Hyperparameter-tuned training for sections 5-6 (Divya / FER2013).
+    # Hyperparameter-tuned training for sections 5-6 (facial recognition).
     epochs = 30
     os.makedirs("results", exist_ok=True)
     print('* Using random seed {}'.format(SEED))
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         json.dump(metrics, f, indent=2)
 
     print('* Model saved as {}'.format(filename))
-    print('* Canonical model saved as {}'.format(BEST_MODEL_PATH))
+    print('* Best model saved as {}'.format(BEST_MODEL_PATH))
     print('* Test accuracy: {:.4f}'.format(metrics["test_metrics"].get("accuracy", 0.0)))
-    print('* For identical accuracy on every device, share results/best_basic_model.keras')
-    print('*   and run: python3 evaluate_locked_model.py  (do not retrain)')
+    print('* For the same accuracy on every device, share results/best_basic_model.keras')
+    print('*   and run: python3 evaluate_model.py  (do not retrain)')

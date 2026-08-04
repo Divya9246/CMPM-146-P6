@@ -33,7 +33,7 @@ from matplotlib.image import imread
 import cv2
 
 class UserWebcamPlayer:
-    # Cache the trained FER2013 model so it is not reloaded every prediction.
+    # Cache the trained facial recognition model so it is not reloaded every prediction.
     def __init__(self):
         self.model = models.load_model('results/best_basic_model.keras', compile=False)
     

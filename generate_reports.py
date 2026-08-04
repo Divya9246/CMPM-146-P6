@@ -1,4 +1,4 @@
-"""Generate PDF reports for Divya's P6 sections 5-7 only (FER2013 + game)."""
+"""Generate PDF reports for Divya's P6 sections 5-7 only (facial recognition + game)."""
 
 import json
 import os
@@ -54,10 +54,10 @@ def build_section5_6_report(metrics):
     doc = SimpleDocTemplate(str(out), pagesize=letter, title="P6 Sections 5-6 Basic Model")
     story = []
 
-    story.append(Paragraph("P6 Sections 5 &amp; 6 — Facial Emotion CNN (FER2013)", styles["Title"]))
+    story.append(Paragraph("P6 Sections 5 &amp; 6 — Facial Recognition CNN", styles["Title"]))
     story.append(Spacer(1, 0.2 * inch))
     story.append(Paragraph(
-        "Dataset: Kaggle FER2013 (happy / neutral / surprise), 5000 training images via export_dataset.py.",
+        "Dataset: facial expression images (happy / neutral / surprise), 5000 training images via export_dataset.py.",
         styles["Body"],
     ))
 
@@ -151,14 +151,14 @@ def build_section7_report(metrics):
     test_acc = (metrics or {}).get("test_metrics", {}).get("accuracy")
     if test_acc is not None:
         story.append(Paragraph(
-            f"Held-out FER2013 test accuracy is <b>{test_acc:.4f}</b>. "
+            f"Held-out facial recognition test accuracy is <b>{test_acc:.4f}</b>. "
             "Webcam accuracy is usually a bit lower because of lighting/pose/framing domain shift.",
             styles["Body"],
         ))
 
     story.append(Paragraph("If not, why not?", styles["Heading2"]))
     story.append(Paragraph(
-        "FER2013 faces are tightly cropped and centered; webcam frames differ in illumination, "
+        "Training faces are tightly cropped and centered; webcam frames differ in illumination, "
         "expression intensity, and alignment.",
         styles["Body"],
     ))
