@@ -123,6 +123,7 @@ if __name__ == "__main__":
         verbose="auto",
         validation_data=validation_dataset,
         callbacks=callbacks,
+        class_weight={0: 1.0, 1: 1.15, 2: 1.25},  # happy, neutral, surprise (alpha order)
     )
 
     print('* Evaluating {}'.format(name))
