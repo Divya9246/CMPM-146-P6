@@ -1,5 +1,5 @@
-# Prefer a modern TensorFlow that installs on current macOS/Python.
-# Course writeup mentioned 2.12; newer 2.x works for this project.
+# Original assignment used TensorFlow 2.12.
+# Compatibility imports also support newer TF/Keras we tested; not every version is guaranteed.
 tensorflow>=2.12.0
 seaborn>=0.12.2
 scikit-learn>=1.3.0
