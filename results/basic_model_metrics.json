@@ -1,4 +1,5 @@
 {
+  "label": "optimized_network_section_6_final",
   "model_file": "results/best_basic_model.keras",
   "timestamped_model_file": "results/basic_model_35_epochs_timestamp_1785805543.keras",
   "seed": 42,
@@ -10,5 +11,6 @@
     "accuracy": 0.7774882912635803,
     "loss": 0.5581111311912537
   },
-  "total_params": 149683
+  "total_params": 149683,
+  "notes": "FINAL submission model for sections 6-7 and evaluate_model.py. Do not overwrite by retraining unless intentionally replacing the submission model."
 }

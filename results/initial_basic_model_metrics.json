@@ -1,0 +1,12 @@
+{
+  "label": "initial_network_section_5",
+  "model_file": "results/initial_basic_model.keras",
+  "epochs_trained": 15,
+  "best_val_accuracy": 0.7039999961853027,
+  "test_metrics": {
+    "accuracy": 0.7261594533920288,
+    "loss": 0.6855013370513916
+  },
+  "total_params": 110755,
+  "notes": "Simpler CNN: no augmentation, Dense(16), RMSprop(0.001). Target >= 60% test accuracy."
+}

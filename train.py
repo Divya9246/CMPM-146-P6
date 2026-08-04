@@ -74,7 +74,11 @@ def plot_history(history, save_path=None):
     plt.close()
 
 if __name__ == "__main__":
-    # Hyperparameter-tuned training for sections 5-6 (facial recognition).
+    # Section 6 optimized facial recognition training.
+    # WARNING: Retraining overwrites results/best_basic_model.keras and can change
+    # the submission accuracy. For the frozen submission score, run:
+    #   python3 evaluate_model.py
+    # instead of this script.
     epochs = 40
     os.makedirs("results", exist_ok=True)
     print('* Using random seed {}'.format(SEED))

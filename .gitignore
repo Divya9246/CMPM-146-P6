@@ -11,10 +11,16 @@ transfer_data/
 
 *.h5
 
-# Keep Divya's trained FER2013 artifacts for the game controller / reports
+# Keep Divya's trained facial recognition artifacts for the game controller / reports
 results/*
 !results/.gitkeep
 !results/best_basic_model.keras
 !results/best_basic_model.npy
+!results/best_basic_model_summary.txt
 !results/basic_model_history.png
 !results/basic_model_metrics.json
+!results/initial_basic_model.keras
+!results/initial_basic_model.npy
+!results/initial_basic_model_history.png
+!results/initial_basic_model_metrics.json
+!results/initial_basic_model_summary.txt
