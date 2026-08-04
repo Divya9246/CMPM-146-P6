@@ -1,38 +1,48 @@
-# CMPM 146 — Project 6 (Facial Recognition + Tic-Tac-Toe + Transfer Learning)
+# CMPM 146 — Project 6
 
 **Team**
-- **Divya Machiraju** (`Divya9246`) — Sections 5–7: facial CNN, optimization, evaluation, and webcam tic-tac-toe
-- **Yuhui Zhen / YHZ** (`yzhen174`) — Section 8: dog-versus-cat transfer learning and randomized comparison model
+- **Divya Machiraju** (`Divya9246`) — Sections 5–7: facial CNN, optimization, evaluation, webcam tic-tac-toe
+- **Yuhui Zhen / YHZ** (`yzhen174`) — Section 8: dog-vs-cat transfer learning and random comparison model
 
 ---
 
-## What this project is
+## How we split the work
 
-We trained a facial emotion classifier (neutral / happy / surprise), used the webcam so faces can pick tic-tac-toe moves, and Yuhui reused the CNN backbone for a dog-vs-cat transfer learning experiment (plus a random-weight control).
+We planned the project over Discord and stuck to a clear split.
+
+1. **Kickoff (late July)**  
+   Divya shared the P6 plan / writeup. Yuhui agreed it looked good, shared GitHub (`yzhen174`), and Divya sent a repo invite.
+
+2. **Datasets**  
+   - Divya: [FER-2013](https://www.kaggle.com/datasets/msambare/fer2013) for facial emotions (`neutral`, `happy`, `surprise`).  
+   - Yuhui: [Dog vs Cat Images Data](https://www.kaggle.com/datasets/kunalgupta2616/dog-vs-cat-images-data) for transfer learning.
+
+3. **Divya — Sections 5–7 first**  
+   Finished the facial CNN, training, and webcam tic-tac-toe integration. Early working version was about **74.7%** test accuracy (above the ≥60% requirement, under the 150k param limit), and the full webcam game worked. Pushed via PR; Yuhui pulled once the PR was merged.
+
+4. **Yuhui — Section 8**  
+   Built the transfer model and random model on dog vs cat. On Yuhui’s runs: transfer had higher accuracy for the first few epochs; later random could pull ahead overall. Transfer still had the early validation accuracy after epoch 1 that the assignment cares about. Yuhui also noted that retraining the basic model on their machine gave about **64%**, roughly **10%** below Divya’s facial model — important because transfer/random load that base model, so results can differ by machine. Divya was asked to verify transfer on their side as well.
+
+5. **More tuning**  
+   - Divya kept improving the facial model, added **seeds** so runs stay more consistent across machines, and locked the final shared weights at **~77.75%** test accuracy.  
+   - Yuhui later adjusted transfer/random (epochs → 9, dense → 18 when an earlier run didn’t meet requirements) and shared the dog-vs-cat transfer PDF report.
+
+6. **Who owns what for hand-in**  
+   - Divya: sections 5–7 writeup (architecture, metrics, real webcam game trace), official facial models, evaluate/webcam code.  
+   - Yuhui: section 8 writeup / PDF and transfer + random model details.
 
 ---
 
-## Datasets
-
-**Facial emotions (Sections 5–7)**  
-[FER-2013 on Kaggle](https://www.kaggle.com/datasets/msambare/fer2013?resource=download)  
-Classes: `neutral`, `happy`, `surprise`. Images are resized to 150×150.
-
-**Transfer learning (Section 8)**  
-[Dog vs Cat Images Data on Kaggle](https://www.kaggle.com/datasets/kunalgupta2616/dog-vs-cat-images-data)
-
----
-
-## Official models (do not mix these up)
+## Official models
 
 | What | File | Test accuracy | Params |
 |------|------|---------------|--------|
 | Section 5 initial | `results/section5_initial_model.keras` | **~72.62%** | 110,755 |
 | Section 6/7 final | `results/section6_final_model.keras` | **~77.75%** | 149,683 |
 
-Older tuning runs live under `results/attempts/` as `attempt_1_…`, `attempt_2_…`, etc. They are **not** submission models. See `results/attempts/README.txt`.
+Older tuning runs are under `results/attempts/` (`attempt_1_…`, etc.) and are **not** submission models.
 
-**Locked final accuracy:** use **77.75%** everywhere (`0.777488…` in `results/section6_final_model_metrics.json`). Do not retrain before submitting if you want that number to stay. Check it with:
+Locked final accuracy: **77.75%** (`0.777488…` in `results/section6_final_model_metrics.json`). Do not retrain before submit if you want that number. Check with:
 
 ```bash
 python3 evaluate_model.py
@@ -42,15 +52,13 @@ python3 evaluate_model.py
 
 ## Section 5 — Initial network
 
-Simpler baseline CNN (no augmentation):
+No augmentation.
 
 - Rescaling → Conv(16)-Pool → Conv(32)-Pool → Conv(64)-Pool → Conv(64)-Pool → Flatten → Dense(16) → Dropout(0.3) → Softmax(3)
 - Optimizer: RMSprop (lr=0.001)
-- Under the **150,000** parameter limit (**110,755** params)
-- Best validation accuracy ≈ **0.704**
-- **Test accuracy ≈ 72.62%** (assignment asks for ≥ 60%)
-
-Files: `results/section5_initial_model.keras` (+ history plot, metrics JSON, summary text)
+- **110,755** params (under 150,000)
+- Best val accuracy ≈ **0.704**
+- **Test accuracy ≈ 72.62%** (requirement ≥ 60%)
 
 ```bash
 python3 train_initial.py
@@ -60,100 +68,48 @@ python3 train_initial.py
 
 ## Section 6 — Optimized network
 
-This is the model used for evaluation and the webcam game.
+Model used for evaluation and the webcam game.
 
-### Architecture
-
-- Rescaling + light augmentation: horizontal flip, small rotation, contrast
+- Augmentation: horizontal flip, small rotation, contrast
 - Conv(24)-Pool → Conv(32)-Pool → Conv(48)-Pool → Conv(64)-Pool → Dropout(0.25)
-- Flatten (named `"flatten"` for transfer compatibility) → Dense(32) → Dropout(0.4) → Softmax(3)
-- Optimizer: Adam (lr=0.0009)
-- **149,683** parameters (under the 150,000 limit)
-
-### Training setup
-
-- Seeds (`SEED = 42`) for Python, NumPy, and TensorFlow so runs are more repeatable across machines
-- EarlyStopping + ModelCheckpoint + ReduceLROnPlateau
-- Trained up to 35 epochs (best checkpoint kept)
-
-### Results (official / locked)
-
-- Best validation accuracy ≈ **0.786**
+- Flatten `"flatten"` (for transfer compatibility) → Dense(32) → Dropout(0.4) → Softmax(3)
+- Adam (lr=0.0009), seed **42**, EarlyStopping + ModelCheckpoint + ReduceLROnPlateau
+- **149,683** params (under 150,000)
+- Best val accuracy ≈ **0.786**
 - **Test accuracy ≈ 77.75%**
-- Confusion matrix shape (from evaluation of the saved model): strong diagonal for all three classes; some confusion between neutral and happy, which also shows up a bit on webcam
-
-What we tried while tuning: more epochs, BatchNorm (didn’t help enough / was abandoned), different dense sizes, etc. Those extras are renamed under `results/attempts/`.
 
 ```bash
-python3 train.py              # overwrites the final model — only if you mean to
-python3 evaluate_model.py     # score the saved final model without retraining
+python3 train.py              # overwrites final model — careful
+python3 evaluate_model.py     # score saved model only
 ```
 
 ---
 
-## Section 7 — Webcam tic-tac-toe (real game trace)
+## Section 7 — Webcam tic-tac-toe
 
-### How the controller works
+- `UserWebcamPlayer` loads `results/section6_final_model.keras`
+- Crop → grayscale → resize 150×150 → RGB → predict
+- Remap Keras alphabetical labels to assignment order: `{0:1, 1:0, 2:2}` (neutral=0, happy=1, surprise=2)
+- Text override (`text` then `0`/`1`/`2`) if a cell is taken or the face read is wrong
+- Test-set accuracy **~77.75%**; live webcam is lower (lighting / framing / expression)
 
-- `player.py` → `UserWebcamPlayer` loads `results/section6_final_model.keras`
-- Webcam frame → center crop → grayscale → resize 150×150 → stack to RGB → predict
-- Keras folder order is alphabetical (`happy`, `neutral`, `surprise`), but the assignment wants `neutral=0`, `happy=1`, `surprise=2`, so we remap `{0: 1, 1: 0, 2: 2}`
-- If a predicted cell is already taken (or the face read is wrong), type `text` then `0` / `1` / `2` to override
+### Real game (X = random, O = webcam) — X won top row
 
-### Webcam vs test-set accuracy
-
-Held-out test accuracy for the final model is **~77.75%**. Live webcam accuracy was lower: lighting, framing, and expression strength differ from the training images, so neutral was over-predicted sometimes until the text override was used.
-
-### Real game we played (Player X = random bot, Player O = webcam)
-
-This is a full game from an actual `python3 run.py` session. **Player X won across the top row.**
+From an actual `python3 run.py` session:
 
 ```text
-Start:
-| | | |
-| | | |
-| | | |
+1. X → (0,1)
+   O tried neutral+happy → (0,1) already taken
+2. O surprise+happy → (2,1)
+3. X → (0,0)
+   O tried neutral+happy → (0,1) already taken
+   O tried surprise+happy → (2,1) already taken
+4. O happy+happy → (1,1)
+5. X → (1,0)
+6. O surprise+neutral → (2,0)
+7. X → (0,2)
 
-1. X (random) → (0,1)
-| |X| |
-| | | |
-| | | |
-
-   O tried neutral + happy → (0,1)
-   Position already taken.
-
-2. O surprise + happy → (2,1)
-| |X| |
-| | | |
-| |O| |
-
-3. X (random) → (0,0)
-|X|X| |
-| | | |
-| |O| |
-
-   O tried neutral + happy → (0,1)
-   Position already taken.
-
-   O tried surprise + happy → (2,1)
-   Position already taken.
-
-4. O happy + happy → (1,1)
-|X|X| |
-| |O| |
-| |O| |
-
-5. X (random) → (1,0)
-|X|X| |
-|X|O| |
-| |O| |
-
-6. O surprise + neutral → (2,0)
-|X|X| |
-|X|O| |
-|O|O| |
-
-7. X (random) → (0,2)
+Final:
 |X|X|X|
 |X|O| |
 |O|O| |
@@ -161,9 +117,7 @@ Start:
 Player X won across the top row (0,0)-(0,1)-(0,2).
 ```
 
-### How well the interface worked
-
-The webcam pipeline works end-to-end. Occupied-cell retries and a couple of wrong emotion reads were handled with the built-in text override so the game could finish. The board above is the real terminal outcome, not a made-up win for O.
+Occupied cells and some wrong emotion reads were handled with the text override so the game could finish.
 
 ```bash
 python3 run.py
@@ -171,14 +125,11 @@ python3 run.py
 
 ---
 
-## Section 8 — Transfer + random (Yuhui)
+## Section 8 — Yuhui (summary)
 
-Yuhui owns the detailed numbers / PDF for this section. High level:
-
-- Transfer model: load trained facial base, freeze backbone, keep `flatten`, add a new dense head for dog vs cat
-- Random model: same idea but randomize weights (control)
-- In Yuhui’s tests, transfer looked stronger in the first few epochs; random could catch up later overall. Transfer still showed the early validation accuracy the assignment wants after epoch 1
-- Base-model accuracy can differ by machine / retrain (~10% difference showed up once), which can affect transfer/random since they load that base model
+Transfer: load facial base, freeze backbone, keep `flatten`, new dense head for dog vs cat.  
+Random: same structure with randomized weights (control).  
+Details and numbers are in Yuhui’s dog-vs-cat PDF.
 
 ```bash
 python3 train_transfer.py
@@ -188,34 +139,11 @@ python3 train_transfer.py
 
 ## Setup
 
-The original assignment used **TensorFlow 2.12**. Our compatibility imports also support newer TensorFlow/Keras versions we tested on our machines. We do **not** guarantee every modern TensorFlow version will work.
+Assignment used TensorFlow **2.12**. Compatibility imports also support newer TF/Keras we tested; not every version is guaranteed.
 
 ```bash
 pip install -r requirements.txt
-
-# FER-2013 → train/ and test/ with neutral, happy, surprise folders
-# Dog-vs-cat data where preprocess / train_transfer expect it
+python3 train_initial.py
+python3 evaluate_model.py
+python3 run.py
 ```
-
-Useful commands:
-
-```bash
-python3 train_initial.py      # section 5 baseline
-python3 train.py              # section 6 optimized (overwrites final model — careful)
-python3 evaluate_model.py     # score saved final model (keep ~77.75%)
-python3 run.py                # tic-tac-toe with webcam
-python3 train_transfer.py     # Yuhui’s transfer / random training
-```
-
-On Mac use `python3`. If Rescaling / augmentation imports fail, the code tries both the older `experimental.preprocessing` path and the newer Keras path.
-
----
-
-## Submission checklist (Divya sections 5–7)
-
-- Final facial model under **150k** params (**149,683**) and above 60% test accuracy (**~77.75%**)
-- Initial network saved and reported separately for section 5 (**~72.62%**)
-- Webcam game works with emotion → board mapping + real move trace above
-- Seeds in train scripts for more repeatable runs
-- Do **not** retrain right before submit if you want the locked **77.75%** — use `evaluate_model.py` and the committed `.keras` file
-- Yuhui attaches / completes the section 8 transfer + random writeup on their side
