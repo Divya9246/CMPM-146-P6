@@ -6,7 +6,6 @@ import json
 # ---- Reproducibility (seed everyone to the same starting point) ----
 SEED = 42
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = "1"
 random.seed(SEED)
 
 import numpy as np
@@ -16,10 +15,6 @@ import tensorflow as tf
 tf.random.set_seed(SEED)
 try:
     tf.keras.utils.set_random_seed(SEED)
-except Exception:
-    pass
-try:
-    tf.config.experimental.enable_op_determinism()
 except Exception:
     pass
 
@@ -80,13 +75,12 @@ def plot_history(history, save_path=None):
 
 if __name__ == "__main__":
     # Hyperparameter-tuned training for sections 5-6 (facial recognition).
-    epochs = 30
+    epochs = 40
     os.makedirs("results", exist_ok=True)
     print('* Using random seed {}'.format(SEED))
     print('* Data preprocessing')
     train_dataset, validation_dataset, test_dataset = get_datasets()
-    train_dataset = _make_deterministic(train_dataset)
-    validation_dataset = _make_deterministic(validation_dataset)
+    # Keep split reproducible; allow normal shuffle during training for better generalization.
     test_dataset = _make_deterministic(test_dataset)
 
     name = 'basic_model'
@@ -98,7 +92,7 @@ if __name__ == "__main__":
     callbacks = [
         EarlyStopping(
             monitor="val_accuracy",
-            patience=6,
+            patience=8,
             restore_best_weights=True,
             mode="max",
         ),
@@ -111,7 +105,7 @@ if __name__ == "__main__":
         ReduceLROnPlateau(
             monitor="val_loss",
             factor=0.5,
-            patience=3,
+            patience=4,
             min_lr=1e-5,
             verbose=1,
         ),
@@ -123,7 +117,6 @@ if __name__ == "__main__":
         verbose="auto",
         validation_data=validation_dataset,
         callbacks=callbacks,
-        class_weight={0: 1.0, 1: 1.15, 2: 1.25},  # happy, neutral, surprise (alpha order)
     )
 
     print('* Evaluating {}'.format(name))

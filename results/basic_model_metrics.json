@@ -1,13 +1,14 @@
 {
   "model_file": "results/best_basic_model.keras",
-  "timestamped_model_file": "results/basic_model_30_epochs_timestamp_1785801716.keras",
-  "epochs_trained": 30,
-  "best_val_accuracy": 0.7879999876022339,
-  "final_train_accuracy": 0.7602499723434448,
-  "final_val_accuracy": 0.7850000262260437,
+  "timestamped_model_file": "results/basic_model_35_epochs_timestamp_1785805543.keras",
+  "seed": 42,
+  "epochs_trained": 35,
+  "best_val_accuracy": 0.7860000133514404,
+  "final_train_accuracy": 0.7870000004768372,
+  "final_val_accuracy": 0.7860000133514404,
   "test_metrics": {
-    "accuracy": 0.7678478360176086,
-    "loss": 0.5869878530502319
+    "accuracy": 0.7774882912635803,
+    "loss": 0.5581111311912537
   },
   "total_params": 149683
 }
